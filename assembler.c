@@ -8,7 +8,7 @@
 #include "preAssembler.h" 
 #include "utils.h"
 
-#define MemorySize 256
+
 
 static bool process_file(char *filename);
 
@@ -41,8 +41,8 @@ int main (int argc, char *argv[])
 static bool process_file(char *fileName)
 {
 	/* variables declaration*/
-	
-	long ic= IC_INIT_VALUE;
+	table symbol_table = NULL;
+	long ic= 0;
 	long dc= 0;
 	/* return value  if needed */
 	
@@ -126,7 +126,7 @@ static bool process_file(char *fileName)
 		else 
 		{
 		
-		if(!stepOne(curr_line_info, machineCommands, machineData, &ic, &dc))
+		if(!stepOne(curr_line_info, machineCommands, machineData, &ic, &dc, &symbol_table))
 			if (is_success) 
 			{
 				
