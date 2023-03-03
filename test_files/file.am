@@ -1,4 +1,3 @@
-
 a1: .data 	1	,	 2,	 3,	 4	 
 a2: .data 1,	 2,i	 ,1
 mov 1,2 
@@ -45,3 +44,8 @@ HELLO:
 abcd:abc
 
 ABCD
+
+.data  45, 23, 6, 7, 4, 3, 75 ,45, 34, 
+.data  45, 23, 6, 7, 4, 3, 75 ,45, 34, 1
+.string "abcd"
+.string "abcd
