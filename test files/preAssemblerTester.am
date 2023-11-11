@@ -1,0 +1,49 @@
+
+;test0
+.data 1,2,3
+.string "this is macro test 0 tab after mcr"
+;end test0
+
+
+
+;test1
+.data 1,2,3
+.string "this is macro test 1 tab and space befor mcr"
+;end test1
+
+
+;test2
+.data 1,2,3
+.string "this is macro test 2"
+;end test2
+
+
+;test3
+.data 1,2,3
+.string "this is macro test 3"
+;end test3
+
+
+;test4
+.data 1,2,3
+.string "this is macro test 4"
+.string "text befor ;end test4
+
+
+;test5
+.data 1,2,3
+.string "this is macro test 5"
+;end test5
+
+
+
+;test6
+.string "this is macro test 6 this macro is ververyververyververyververyververyververyververyververyververyververyververyververylong"
+.string "this is macro test 6 this macro is ververyververyververyververyververyververyververyververyververyververyververyververylong"
+;end test6
+
+
+;test7 reserved word
+.string "this macro name is reserved word"
+;end test7
+
