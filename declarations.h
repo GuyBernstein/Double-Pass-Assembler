@@ -1,155 +1,125 @@
 #ifndef _DECLERATIONS_H
 #define _DECLERATIONS_H
 
-/** Maximum size of code image and data image */
-#define CODE_ARR_IMG_LENGTH 1200
+/* We print to stderr for errors*/
+#define ERR_OUTPUT_FILE stderr
 
-/** Maximum length of a single source line  */
+/* Maximum length of a single source line */
 #define MAX_LINE 80
+
+/* Maximum number of macros allowed */
 #define MAX_MCR 256
+
+/* Size of the "endmcr" string */
 #define MCR_END_SIZE 6
 
+/* Maximum length of a label allowed */
 #define MAX_LABLE_LEN 30
 
+/* Initializing IC to be 100 */
+#define IC_START_VALUE 100
 
+/* Total number of memory cells */
+#define MEMORYSIZE 256
 
-/** Initial IC value */
-#define IC_INIT_VALUE 100
+/* Total number of directives that we use in assembly */
+#define NUM_OF_DIRECTIVES 4
 
-
+/* Total number of functions that we use in assembly */
 #define NUM_OF_FUNCS 16
 
-/** Represents a single data word. */
-typedef struct data_word 
-{
-	unsigned int ARE: 3;
-	/* The data content itself (a method for putting data into these field is defined) */
-	unsigned long data;
-} data_word;
+/* The range between 14 bits of numbers */
+#define SHRT_MIN_14_BITS -8192
+#define SHRT_MAX_14_BITS 8192
 
-/** Represents a single code word */
-typedef struct code_word 
-{
-	/* First byte: ARE+funct */
-	unsigned int ARE: 3;
-	unsigned int funct: 5;
-	/* 2nd byte: destination+addressing, source */
-	unsigned int dest_register: 3;
-	unsigned int dest_addressing: 2;
-	unsigned int src_register: 3;
-	/* Third byte: source addressing, opcode */
-	unsigned int src_addressing: 2;
-	unsigned int opcode: 6;
+/* The maximum number of operands for the functions in assembly that we use */
+#define MAX_TOKENS 2
 
-} code_word;
+/* for function use to take note if its second or first group */
+#define FIRSTGROUPTARGET 0
+#define FIRSTGROUPSOURCE 1
+#define SECONDGROUP 2
 
-/** Represents a general machine code word contents */
-typedef struct machine_word 
-{
-	/* if it represents code (not additional data), this field contains the total length required by the code. if it's data, this field is 0. */
-	short length;
-	/* The content can be code or data */
-	union word {
-		data_word *data;
-		code_word *code;
-	} word;
-} machine_word;
+/*
+ * Macro that moves the given string pointer to the next non-whitespace character
+ */
+#define MOVE_TO_NOT_WHITE(string, index) \
+        for (;string[(index)] && (string[(index)] == '\t' || string[(index)] == ' '); (++(index)))\
+        	;
 
+/* Macro for freeing memory allocated for files */
+#define FREE_FILES(file1,file2,file3) \
+	free(file1); \
+	free(file2); \
+	free(file3);
 
-typedef enum booleans 
-{
-	FALSE = 0, TRUE = 1
+/* Boolean type used in the program */
+typedef enum booleans {
+	FALSE = 0, 
+	TRUE = 1
 } bool;
 
-typedef struct line_info 
-{
-	/** Line number in file */
-	long line_number;
-	/** File name */
+/* Struct that keeps the information of the line in the file */
+typedef struct line_info {
+	/* Line number in file */
+	short line_number;
+	/* File name */
 	char *file_name;
-	/** Line content (source) */
+	/* Line content (source) */
 	char *content;
 } line_info;
 
-/** Instruction type (.data, .entry, etc.) */
-typedef enum directive 
-{
-	/** .data directive */
-	DATA_DIRE,
-	/** .extern directive */
-	EXTERN_DIRE,
-	/** .entry directive */
-	ENTRY_DIRE,
-	/** .string directive */
-	STRING_DIRE,
-	/** Not found */
-	NONE_DIRE,
-	/** Parsing/syntax error */
-	ERROR_DIRE
+/*
+	This union represents a line of code, including any associated label and binary code.
+	It will be used in step two of the code execution process.
+*/
+typedef union line_code {
+
+	short code; /* A short integer representing the binary code associated with this line of code.*/
+
+	struct {
+    		line_info line; /* Represents a line of code.*/
+    		char label[MAX_LABLE_LEN]; /* Represents a label associated with a line of code.*/
+    		short code; /* A short integer representing the binary code associated with this line of code.*/
+	} code_info;
+} line_code;
+
+/* Enumeration for directive types (.data, .entry, etc.) */
+typedef enum directive {
+	DATA_DIRE,      /* .data directive */
+	EXTERN_DIRE,    /* .extern directive */
+	ENTRY_DIRE,     /* .entry directive */
+	STRING_DIRE,    /* .string directive */
+	NONE_DIRE,      /* Not found */
+	ERROR_DIRE      /* Parsing/syntax error */
 } directive;
 
-/** Commands opcode */
-typedef enum opcodes 
-{
-	/* First Group */
-	MOV_OP = 0,
-	CMP_OP = 1,
+/* Enumeration for command opcodes, with NONE_OP for not found */
+typedef enum opcodes {
+	MOV_OP,
+	CMP_OP,
+	ADD_OP,
+	SUB_OP,
+	NOT_OP,
+	CLR_OP,
+	LEA_OP,
+	INC_OP,
+   	DEC_OP,
+	JMP_OP,
+	BNE_OP,
+	RED_OP,
+  	PRN_OP,
+	JSR_OP,
+	RTS_OP,
+	STOP_OP,
 
-	ADD_OP = 2,
-	SUB_OP = 2,
-
-	LEA_OP = 4,
-	/* END First Group */
-
-	/* Second Group */
-	CLR_OP = 5,
-	NOT_OP = 5,
-	INC_OP = 5,
-	DEC_OP = 5,
-
-	JMP_OP = 9,
-	BNE_OP = 9,
-	JSR_OP = 9,
-
-	RED_OP = 12,
-	PRN_OP = 13,
-	/* END Second Group */
-
-	/* Third Group */
-	RTS_OP = 14,
-	STOP_OP = 15,
-	/* END Third Group */
-
-	/** Failed/Error */
+	/* Failed/Error */
 	NONE_OP = -1
 } opcode;
 
-/** Commands functions */
-typedef enum funct 
-{
-	/* OPCODE 2 */
-	ADD_FUNCT = 1,
-	SUB_FUNCT = 2,
-
-	/* OPCODE 5 */
-	CLR_FUNCT = 1,
-	NOT_FUNCT = 2,
-	INC_FUNCT = 3,
-	DEC_FUNCT = 4,
-
-	/* OPCODE 9 */
-	JMP_FUNCT = 1,
-	BNE_FUNCT = 2,
-	JSR_FUNCT = 3,
-
-	/** Default (No need/Error) */
-	NONE_FUNCT = 0
-} funct;
-
-/** Registers - r0->r1 + not found */
-typedef enum registers 
-{
-	R0 = 0,
+/* Enumeration for registers - r0->r7 + not found */
+typedef enum registers {
+	R0,
 	R1,
 	R2,
 	R3,
@@ -160,7 +130,39 @@ typedef enum registers
 	NONE_REG = -1
 } reg;
 
+
+
+/** Operand addressing type */
+typedef enum addressing_types 
+{
+	/** Immediate addressing (0) */
+	IMMEDIATE_ADDR ,
+	/** Direct addressing (1) */
+	DIRECT_ADDR ,
+	/** Relative addressing (2) */
+	RELATIVE_ADDR ,
+	/** Register addressing (3)*/
+	REGISTER_ADDR ,
+	/** Failed/Not found that its an addressing */
+	NONE_ADDR = -1
+} addressing_type;
+
+/** Operand encoding type */
+typedef enum encoding_types 
+{
+	/** Absolute encoding (0) */
+	ABSOLUTE,
+	/** External encoding (1) */
+	EXTERNAL,
+	/** Relocatable encoding (2) */
+	RELOCATEBLE
+
+
+} encoding_types;
+
+
 #endif
+
 
 
 
