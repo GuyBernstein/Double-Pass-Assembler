@@ -3,7 +3,7 @@
 
 /* We print to stderr for errors*/
 #define ERR_OUTPUT_FILE stderr
-
+ 
 /* Maximum length of a single source line */
 #define MAX_LINE 80
 
