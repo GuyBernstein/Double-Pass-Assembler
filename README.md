@@ -62,10 +62,6 @@ This project is primarily for educational purposes. However, if you find any bug
 
 This project was developed by Guy Bernstein (@GuyBernstain) as part of the Open University of Israel's C programming course.
 
-## License 📄
-
-This project is open-source and available under the MIT License. See the LICENSE file for more details.
-
 ## Acknowledgments 🙏
 
 Special thanks to the Open University of Israel and the course staff for providing the project specifications and guidance.
